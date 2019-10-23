@@ -124,7 +124,7 @@ Set-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName myResou
     - AzCopy syntax: AzCopy Source:\<source> Dest:\<destination> SourceKey:\<paste from azure> DestKey:\<paste from azure> Pattern:\<pattern>
 - No questions
     - Redis Cache
-## LAB Notes
+### LAB Notes
 
 1. Part: Portal Setup 
     1. Setup storage services needed
@@ -136,3 +136,58 @@ Set-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName myResou
     3. Make Cosmos DB 
     4. Make Azure Storage account
 
+
+## AZ-203T04
+1. Multitenant app
+    - common endpoint where people login
+    - 
+2. Types of permissions
+    - Delegated permission
+    - Application permission
+3. Type of consent
+    - Static user consent: Automatic via OAuth2
+    - Dynamic user consent: Users will be prompted
+4. Type of authentication
+    - Legacy authentication: Formbased in HTML
+    - Kerberos
+    - ASP.NET Identity
+    - App Authentication
+    - Multifactor: New way
+        - Knowledge: pw
+        - Possession: token
+        - Inherence: biometic
+    - Multifactor with Azure AD
+        - Two factor: call, text, notification through mobilde app, verification code from mobile app
+
+### Implement Access control
+1. RBAC - role based access control
+    - Grant access to specific resources
+    - Best practise: Segregate duties: Reader, contributer, owener
+    - Security principal:
+        - User: profile in AD
+        - Group of user in AD
+        - Service principal: Security identity: For application, rather than people
+        - Managed Identity: Azure automatically manages
+    - Role definition in JSON files
+    - Roles:
+        - Owner Full access, grant others access
+        - Contribuer: Create an manage all type of services
+        - Reader: Can view
+    - Role assignment
+        - Attach role definition to a user. 
+        - Portal, CLI, APIS, SDK, PS1
+        - Must have MS.Authorization/roleAssignment/*Access Administrator roles
+    - Supports Deny:
+        - Deny will override any allow on any higher level.
+    - Classic admin roles
+        - 
+    
+
+### Questions
+- Senario: Many companies {....} multi-tenant 
+- How do you implement OAuth 2 implementation. 
+- What can RBACS do: reader, contributer, owner: Senario: setup storage account, make sure who and how to access
+    - What role to provide for A and B
+- Given this security on this group: what can they do. Remember inheritance in AD. SCOPES
+- Learn Azure RBAC roles
+- Concentrate on C# RBAC
