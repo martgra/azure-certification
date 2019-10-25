@@ -181,7 +181,62 @@ Set-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName myResou
         - Deny will override any allow on any higher level.
     - Classic admin roles
         - 
+2. Encryption
+    - End to end encryption
+    - TDE: SQL Server, A SQL Database and Azure SQL Data Warehouse    
+    - Always encrypted feature
+3. Confidential computing
+    - High level of compute - at the same time high level of encryption
+    - Trusted Execution Environment (TEE). 
+    - Cannot debug the object remote or interal
+    - Altering disables compute
+4. Manage keys through Vauls
+    - Key manager - AD
+    - Access Keyvault through CLI - 
+    ```bash
+    az keyvault create --name --resource-group --location
+    ```
+    - Access the keyvault through Portal.
+    - 
+
+### Lab 4
+
+```c#
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
+
+
+
+public static async Task<IActionResult> Run(HttpRequest req)
+{
+    // Skaffer access til fil
+    string connectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
+    CloudStorageAccount account = CloudStorageAccount.Parse(connectionString);
+    CloudBlobClient blobClient = account.CreateCloudBlobClient();
+    CloudBlobContainer container = blobClient.GetContainerReference("drop");
+    CloudBlockBlob blob = container.GetBlockBlobReference("records.json");
     
+
+
+    // nytt Policy-object 
+    SharedAccessAccountPolicy policy = new SharedAccessAccountPolicy()
+    {
+        Permissions = SharedAccessAccountPermissions.Read,
+        Services = SharedAccessAccountServices.Blob,
+        ResourceTypes = SharedAccessAccountResourceTypes.Object,
+        SharedAccessExpiryTime = DateTime.UtcNow.AddHours(2),
+        Protocols = SharedAccessProtocol.HttpsOnly
+        
+    };
+
+    string sasToken = account.GetSharedAccessSignature(policy);
+    string secureBlobUrl = blob.Uri+sasToken;
+    return new OkObjectResult(secureBlobUrl);
+}
+```
+
 
 ### Questions
 - Senario: Many companies {....} multi-tenant 
@@ -191,3 +246,74 @@ Set-AzureRmResource -PropertyObject $PropertiesObject -ResourceGroupName myResou
 - Given this security on this group: what can they do. Remember inheritance in AD. SCOPES
 - Learn Azure RBAC roles
 - Concentrate on C# RBAC
+- Would you benefit from TEE?
+- How to Access keyvault?
+- What example of the CLI will work?
+
+## AZ203-05-A
+
+### Notes
+- Log or Metrics
+- Log: 
+    - Own query language
+    - Application monitoring data
+    - Guest os data
+    - Resource monitorign
+    - Azure subscription monitoring data
+ - Monitor for Containers
+    - Kubernetes
+    - Metrics API
+    - Remediation: Respond to critical situations
+    - Alerts: Action groups: Information to certain people
+    - Autoscale: Rules for autoscale -- spin up instances if needed. 
+- Application insights-
+    - dependencies
+    - exceptions
+    - page views
+    - AJAX calls
+    - User and session counts
+    - performance counters - from Linux, windows on prem servers
+- Scaling
+    - Autoscale regular profile: Not on particular day.
+        - Always one profile defined
+        - Two rules, chooses the maximum capacity. 
+        - What containers can be Autoscaled --> must be enabled for autoscale
+    - Best practise
+        - Only one Autoscale setting
+        - Can have multiple profiles
+    - AZ quering
+        ```
+         az vm list --query [].{name:name, image:storageProfile}
+         az vm list --query "[? starts with]
+         ```
+    - Fulent SDK quering
+        ```C#
+        Azure = azure = Azure.authenticate
+        ```
+    - LINQ queries
+- Error handling code
+    - for loop handles tansient exceptions
+- Azure Cache for Redis
+    - Fast storage in Memory.
+    - Strings, hashed
+    - Associed with keys
+        - Use keys that describes data
+    - Stored in nodes
+- Content delivery network
+    - Brings static files closer to
+        - Lower latency
+        - Static content
+        - Images
+        - Videos
+    - Manged through CLI
+        ```bash
+        az cdn profiles list
+        --sku unique identfier
+        ```
+    - 
+### Questions
+- What will this log-query return?
+- What autoscaling rule will take presidence 
+- Query resources using CLI:
+- What the difference between single (basic), multiple(standard), persist with snapshop (Premium)
+-  
